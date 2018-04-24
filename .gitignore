@@ -1,0 +1,29 @@
+
+##
+## Ignore files created by various applications.
+##
+
+# Editors (vi, emacs, etc.):
+*~
+.*.swp
+
+# Eclipse:
+*.classpath
+*.metadata
+*.project
+*.pydevproject
+*.settings
+
+# Maven:
+*target/
+
+# Python:
+*.pyc
+*.coverage
+*htmlcov/
+
+##
+## Ignore common temp files created by users.
+##
+*.old
+*.bak
