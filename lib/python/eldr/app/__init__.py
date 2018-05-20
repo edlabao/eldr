@@ -50,7 +50,6 @@ class App(object):
         # Application exit code.
         self._status = AppStatusOkay
 
-
     def add_arguments(self, parser):
         """
         Optional method that can be defined by subclasses to add support for
@@ -63,14 +62,6 @@ class App(object):
         """
         pass
 
-
-    def execute(self):
-        """
-        Entry point for the application subclass and must be implemented.
-        """
-        raise NotImplementedError
-
-
     def get_log_formatter(self):
         """
         Return a log formatter.
@@ -80,7 +71,6 @@ class App(object):
                          "%(message)s"]
         return logging.Formatter(" ".join(format_fields))
 
-
     def get_log_handler(self, silent):
         """
         Return a log handler.
@@ -89,7 +79,6 @@ class App(object):
             return logging.NullHandler()
         else:
             return logging.StreamHandler(sys.stdout)
-
 
     def init_logging(self):
         """
@@ -104,7 +93,6 @@ class App(object):
         handler.setFormatter(formatter)
         self.log.addHandler(handler)
 
-
     def log_exception(self):
         """
         Log the current stack trace.
@@ -113,7 +101,6 @@ class App(object):
             if line:
                 self.log.error("> {}".format(line))
 
-
     @property
     def log_level(self):
         """
@@ -121,6 +108,11 @@ class App(object):
         """
         return self._log_level
 
+    def main(self):
+        """
+        Entry point for the application subclass and must be implemented.
+        """
+        raise NotImplementedError
 
     def process_arguments(self, args, arg_extras):
         """
@@ -131,7 +123,6 @@ class App(object):
         ArgParser.parse_args().
         """
         pass
-
 
     def run(self, args=None):
         """
@@ -163,7 +154,7 @@ class App(object):
 
             # Output a header and execute the application.
             self.log.info("-" * 72)
-            self.execute()
+            self.main()
 
         except AppError:
             # When an AppError is raised, assume that the subclass has already
@@ -185,14 +176,12 @@ class App(object):
 
         return self.status
 
-
     @property
     def status(self):
         """
         Return the current application status code.
         """
         return self._status
-
 
     def _add_arguments(self):
         """
@@ -205,7 +194,6 @@ class App(object):
         self._arg_parser.add_argument("--silent",
                                       action="store_true",
                                       dest="silent")
-
 
     def _process_arguments(self, args=None):
         """
@@ -223,7 +211,6 @@ class App(object):
         # Silent flag.
         if self._args.silent:
             self._silent = True
-
 
     @staticmethod
     def name_to_log_level(level_name, default=None):

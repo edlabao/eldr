@@ -20,7 +20,6 @@ class AppRunExecutableMixin(object):
 
         self._executable_status = AppStatusOkay
 
-
     @property
     def executable_status(self):
         """
@@ -28,25 +27,38 @@ class AppRunExecutableMixin(object):
         """
         return self._executable_status
 
-
     def run_executable(self, cmd, **kwargs):
         """
         Run the specified command.
+
+        This is a generator and must be used as an iterable in order to work
+        correcty.
+
+        :Parameters:
+            cmd : List object that contains the executable to run as the first
+                element and each additional argument and value as individual
+                list elements to make it suitable for passing to the Popen
+                  fuction.
+            kwargs : Keyword arguments to pass to the Popen function. This also
+                accepts the following keyword arguments that are stripped prior
+                to passing kwargs to Popen:
+                    expected_statuses : List of integer values which are
+                    acceptable exit codes for the executable (default=[0])
         """
 
         # Reset the exit status.
         self._executable_status = AppStatusOkay
 
         # Set a default list of expected exit status values.
-        expected_values = [AppStatusOkay]
+        expected_statuses = [AppStatusOkay]
 
         # Store the last few lines of output in case we need to log an error.
         output = collections.deque(maxlen=10)
 
         # If there is a kwarg called "expected_values", extract it.
-        if "expected_values" in kwargs:
-            expected_values = kwargs["expected_values"]
-            del(kwargs["expected_values"])
+        if "expected_statuses" in kwargs:
+            expected_statuses = kwargs["expected_statuses"]
+            del(kwargs["expected_statuses"])
 
         # Build the kwargs for the popen command. There are certain options that
         # we always want set, but we extend it with any user-provided kwargs.
@@ -76,14 +88,15 @@ class AppRunExecutableMixin(object):
 
         # Check the exit status and raise an exception if it is not an expected
         # value.
-        if self._executable_status not in expected_values:
+        if self._executable_status not in expected_statuses:
 
-            self.log.error("Executable returned unexpected exit status:")
-            self.log.error("- command: %s" % " ".join(cmd))
-            self.log.error("- exit status: %d" % self._executable_status)
-            self.log.error("- output:")
-
+            # Build the error message.
+            msg = ["Executable returned unexpected exit status:",
+                   "- command: %s" % " ".join(cmd),
+                   "- exit status: {}".format(self._executable_status),
+                   "- output:"]
             for line in output:
-                self.log.error("> %s" % line)
+                msg.append("  > %s" % line)
 
-            raise AppRunExecutableError
+            # Raise the exception with the error message.
+            raise AppRunExecutableError("\n".join(msg))

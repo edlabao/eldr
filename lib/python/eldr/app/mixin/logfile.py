@@ -30,7 +30,6 @@ class AppLogFileMixin(object):
         self._pid = os.getpid()
         self._hostname = socket.gethostname()
 
-
         # Logging parameters.
         self._log_backup_count = kwargs.get("log_backup_count", 7)
         self._log_base_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
@@ -41,7 +40,6 @@ class AppLogFileMixin(object):
 
         self._log_file = None
         self._set_log_file(kwargs.get("log_file"))
-
 
     def get_log_formatter(self):
         """
@@ -54,7 +52,6 @@ class AppLogFileMixin(object):
                          "%(message)s"]
         return logging.Formatter(" ".join(format_fields))
 
-
     def get_log_handler(self):
         """
         Overload the get_log_handler() method to return a
@@ -63,7 +60,6 @@ class AppLogFileMixin(object):
         return logging.handlers.TimedRotatingFileHandler(self.log_file,
                                                          when=self._log_rotate_when,
                                                          backupCount=self._log_backup_count)
-
 
     def init_logging(self):
         """
@@ -93,7 +89,6 @@ class AppLogFileMixin(object):
         # Rotate the log if necessary.
         self._rotate_log(handler)
 
-
     @property
     def log_dir(self):
         """
@@ -101,14 +96,12 @@ class AppLogFileMixin(object):
         """
         return self._log_dir
 
-
     @property
     def log_file(self):
         """
         Return the log file path.
         """
         return self._log_file
-
 
     def _add_arguments(self):
         """
@@ -121,7 +114,6 @@ class AppLogFileMixin(object):
                                       action="store",
                                       dest="log_file")
 
-
     def _process_arguments(self, args=None):
         """
         Process AppLogFileMixin command-line arguments.
@@ -131,7 +123,6 @@ class AppLogFileMixin(object):
 
         # Log file.
         self._set_log_file(self._args.log_file)
-
 
     @staticmethod
     def _rotate_log(log_handler):
@@ -149,7 +140,6 @@ class AppLogFileMixin(object):
             if str(log_date) != str(datetime.date.today()):
                 log_handler.doRollover()
 
-
     def _set_log_dir(self, log_dir):
         """
         Set the log directory.
@@ -157,7 +147,6 @@ class AppLogFileMixin(object):
         self._log_dir = log_dir
         if self._log_dir is None:
             self._log_dir = "{}/{}".format("/var/log", self._log_base_name)
-
 
     def _set_log_file(self, log_file):
         """

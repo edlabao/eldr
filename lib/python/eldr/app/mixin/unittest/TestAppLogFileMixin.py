@@ -11,15 +11,15 @@ import tempfile
 import unittest
 
 ##
-## BOOTSTRAP: BEGIN
-##
-## Bootstrapping code to ensure we can find all the right modules. All other
-## local imports should be done after this block.
+# BOOTSTRAP: BEGIN
+#
+# Bootstrapping code to ensure we can find all the right modules. All other
+# local imports should be done after this block.
 ##
 _path = os.path.realpath(__file__)
 sys.path.insert(0, _path[:_path.find("/eldr/app")])
 ##
-## BOOTSTRAP: END
+# BOOTSTRAP: END
 ##
 
 from eldr.app import App
@@ -36,10 +36,8 @@ class TestApp(AppLogFileMixin, App):
         # Flog to indicate if our execute() method was called.
         self.execute_called = False
 
-
     def execute(self):
         self.execute_called = True
-
 
 
 class Test(unittest.TestCase):
@@ -74,7 +72,6 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
-
     def test_arguments2(self):
         """
         Verify that setting the log directory via a constructor parameter and a
@@ -102,7 +99,6 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
-
     def test_arguments3(self):
         """
         Verify that specifying a log file with an absolute path via command-line
@@ -129,7 +125,6 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
-
     def test_init1(self):
         """
         Verify default logging parameters.
@@ -147,7 +142,6 @@ class Test(unittest.TestCase):
         self.assertTrue(re_file.match(app._log_file))
         self.assertEqual(app._log_rotate_when, "MIDNIGHT")
 
-
     def test_init2(self):
         """
         Verify setting parameters at object construction.
@@ -163,7 +157,6 @@ class Test(unittest.TestCase):
         self.assertEqual(app._log_file, "/foo/bar.log")
         self.assertEqual(app._log_rotate_when, "W6")
 
-
     def test_init3(self):
         """
         Verify that setting base App parameters at object construction is still
@@ -172,7 +165,6 @@ class Test(unittest.TestCase):
         app = TestApp(log_level="DEBUG", silent=True)
         self.assertEqual(app._log_level, logging.DEBUG)
         self.assertTrue(app._silent)
-
 
     def test_init_logging1(self):
         """
@@ -202,7 +194,6 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(temp_root)
 
-
     def test_init_logging2(self):
         """
         Verify the logger object is initialized correctly.
@@ -229,7 +220,6 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
-
     def test_init_logging3(self):
         """
         Verify that a failure to create the log directory is handled correctly.
@@ -253,7 +243,6 @@ class Test(unittest.TestCase):
         # Clean up the devnull hack.
         sys.stderr = orig_stderr
         devnull.close()
-
 
     def test_init_logging4(self):
         """
@@ -280,7 +269,6 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
-
     def test_log_dir1(self):
         """
         Verify the return value of the log_dir property for a default app
@@ -295,7 +283,6 @@ class Test(unittest.TestCase):
         app = TestApp()
         self.assertTrue(re_dir.match(app._log_dir))
 
-
     def test_log_dir2(self):
         """
         Verify the return value of the log_dir property if a log_dir parameter
@@ -303,7 +290,6 @@ class Test(unittest.TestCase):
         """
         app = TestApp(log_dir="/foo")
         self.assertEqual(app.log_dir, "/foo")
-
 
     def test_log_file1(self):
         """
@@ -319,7 +305,6 @@ class Test(unittest.TestCase):
         app = TestApp()
         self.assertTrue(re_file.match(app._log_file))
 
-
     def test_log_file2(self):
         """
         Verify the return value of the log_file property if a log_file parameter
@@ -327,7 +312,6 @@ class Test(unittest.TestCase):
         """
         app = TestApp(log_file="/foo/bar.log")
         self.assertEqual(app.log_file, "/foo/bar.log")
-
 
 
 if __name__ == "__main__":
