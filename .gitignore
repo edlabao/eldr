@@ -22,6 +22,10 @@
 *.coverage
 *htmlcov/
 
+# Visual Studio Code
+*.code-workspace
+*.env
+
 ##
 ## Ignore common temp files created by users.
 ##
