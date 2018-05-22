@@ -1,0 +1,30 @@
+#!/usr/bin/python
+
+import os
+import sys
+
+##
+# BOOTSTRAP: BEGIN
+#
+# Bootstrapping code to ensure we can find all the right modules. All other
+# local imports should be done after this block.
+##
+__path = os.path.dirname(os.path.realpath(__file__)) + "/../lib/python"
+sys.path.insert(0, __path)
+##
+# BOOTSTRAP: END
+##
+
+from eldr.app import App
+
+
+class TestApp(App):
+
+    def main(self):
+        self.log.info("Entered main()")
+        self.log.info("Leaving main()")
+
+
+if __name__ == "__main__":
+    app = TestApp()
+    app.run()
