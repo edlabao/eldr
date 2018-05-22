@@ -31,7 +31,7 @@ class App(object):
 
         # Process information.
         self._app_name = self.__class__.__name__.lower()
-        self._pogram_name = os.path.basename(sys.argv[0])
+        self._program_name = os.path.basename(sys.argv[0])
         self._user = pwd.getpwuid(os.getuid()).pw_name
 
         # Argument parsing.
@@ -167,11 +167,18 @@ class App(object):
             # When a non-AppError exception is raised, set the status and log
             # the error.
             self._status = AppStatusError
+
+            # An exception can occur before logging has been initialized. Check
+            # for the log member and initialize it with the root logging object
+            # if it doesn't exist.
+            if "log" not in dir(self):
+                self.log = logging
+
             self.log.error("Unhandled exception: {}".format(err))
             self.log_exception()
 
         # Output a footer and return the application status code.
-        self.log.info("FINISHED {}".format(self._pogram_name))
+        self.log.info("FINISHED {}".format(self._program_name))
         self.log.info("- Exit status: {}".format(self.status))
 
         return self.status
