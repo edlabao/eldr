@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         # Run a test ls command and validate that it ran successfully meaning
         # that it exited with a non-zero exit status and that it actually listed
         # a test file we're looking for.
-        cmd = ["ls", "-l", "./"]
+        cmd = ["ls", "-Al", "./"]
         app = TestApp()
         for line in app.run_executable(cmd):
             # If the current output line containts the test file we're looking
@@ -83,7 +83,7 @@ class Test(unittest.TestCase):
                     no_such_file = True
 
         except AppRunExecutableError:
-            self.assertEqual(app.executable_status, 1)
+            self.assertTrue(app.executable_status > 0)
             self.assertTrue(no_such_file)
 
     def test_run_executable3(self):

@@ -227,7 +227,7 @@ class Test(unittest.TestCase):
 
         # Set a test directory that doesn't exist and that cannot actually be
         # created.
-        test_dir = "/foobar/test"
+        test_dir = "/dev/null/test"
 
         # An exception raised during init_logging will write an error message to
         # stderr, so temporarily replace stderr with file handle to devnull.
