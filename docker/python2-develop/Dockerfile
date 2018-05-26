@@ -36,6 +36,7 @@ ARG _GET_PIP_SCRIPT=./get-pip.py
 ##   coverage
 ##   flask
 ##   flask-migrate
+##   flask-restplus
 ##   flask-sqlalchemy
 ##   flask-wtf
 ##   sphinx
@@ -50,6 +51,7 @@ RUN mkdir /opt/develop \
     && pip install flask \
     && pip install flask-login \
     && pip install flask-migrate \
+    && pip install flask-restplus \
     && pip install flask-sqlalchemy \
     && pip install flask-wtf \
     && pip install sphinx \
