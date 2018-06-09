@@ -1,6 +1,7 @@
 """
-Application framework mixin that adds convenience methods for running an
-executable.
+Mixin that adds convenience methods for running an executable. As a mixin, this
+module is not meant to be used as a standalone and requires certain members and
+methods from the App base class to be defined.
 """
 
 import collections
@@ -13,6 +14,10 @@ from eldr.app.errors import AppRunExecutableError
 
 
 class AppRunExecutableMixin(object):
+    """
+    Application framework mixin class that adds executable call support.
+
+    """
 
     def __init__(self, *args, **kwargs):
 
@@ -23,27 +28,21 @@ class AppRunExecutableMixin(object):
     @property
     def executable_status(self):
         """
-        Return the current executable exit status value.
+        *Property.* Return the current executable exit status value.
         """
         return self._executable_status
 
     def run_executable(self, cmd, **kwargs):
         """
-        Run the specified command.
+        * *cmd* (list): List instance in which the first element is the path of
+          an executable to run and remaining elements are arguments.
+        * *kwargs* (dict): Dictionary containing key/value pairs of extra
+          parameters to pass the :class:`subprocess.Popen()` command. There are
+          also a few mixin parameters that can be passed via `kwargs` that are
+          stripped before passing to :class:`subprocess.Popen()`
 
-        This is a generator and must be used as an iterable in order to work
-        correcty.
-
-        :Parameters:
-            cmd : List object that contains the executable to run as the first
-                element and each additional argument and value as individual
-                list elements to make it suitable for passing to the Popen
-                  fuction.
-            kwargs : Keyword arguments to pass to the Popen function. This also
-                accepts the following keyword arguments that are stripped prior
-                to passing kwargs to Popen:
-                    expected_statuses : List of integer values which are
-                    acceptable exit codes for the executable (default=[0])
+          * *expected_statuses* (list): Integer list of values that are
+            acceptable exit codes for the executable (default=[0]).
         """
 
         # Reset the exit status.

@@ -1,13 +1,39 @@
 """
-Application framework mixin that adds support for logging application output to
-a log file.
+Mixin that adds support for logging application output to a log file. As a
+mixin, this module is not meant to be used as a standalone and requires certain
+members and methods from the App base class to be defined.
 
-As a mixin, this module is not meant to be used as a standalone but requires the
-following members and methods to be defined:
+This class overloads the :meth:`~.App.get_log_formatter()`,
+:meth:`~.App.get_log_handler()` and :meth:`~.App.init_logging()` methods of the
+:class:`.App` base class so subclasses should not overload these themselves.
 
-    log
-    log_level
-    _app_name
+An instance of the :class:`~logging.handlers.TimedRotatingFileHandler` is
+used to enable rotating log files at a specified time. There are a few
+constructor parameters supported to allow customization of the log rotation
+behavior:
+
+* *log_backup_count* (int): Specify how many rotated log files to keep
+  (default=6).
+* *log_rotate_when* (str): Specify when to rotate the log file
+  (default="MIDNIGHT"). Refer to the Python :mod:`logging.handlers`
+  documentation for valid values.
+
+::
+
+    from eldr.app import App
+    from eldr.app.mixin.logfile import AppLogFileMixin
+
+    class MyApp(AppLogFileMixin, App):
+        #
+        # Define the rest of the class
+        #
+
+    if __name__ == "__main__":
+        app = MyApp(log_backup_count=3, log_rotate_when="W0")
+
+In the above example, the log is rotated once a week on Monday, and 3
+backpups are kept plus the current log. This results in up to 4 log files
+that cover the last month's worth of application logging.
 
 """
 
@@ -21,6 +47,9 @@ from eldr.app.errors import AppInitializationError
 
 
 class AppLogFileMixin(object):
+    """
+    Application framework mixin class that adds logfile support.
+    """
 
     def __init__(self, *args, **kwargs):
 
@@ -92,14 +121,14 @@ class AppLogFileMixin(object):
     @property
     def log_dir(self):
         """
-        Return the log directory.
+        *Property.* Return the log directory.
         """
         return self._log_dir
 
     @property
     def log_file(self):
         """
-        Return the log file path.
+        *Property.* Return the log file path.
         """
         return self._log_file
 

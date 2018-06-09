@@ -1,13 +1,10 @@
-.. ELDR documentation master file, created by
-   sphinx-quickstart on Thu May 17 04:52:20 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-Welcome to ELDR's documentation!
-================================
-ELDR stands for Ed Labao's Developer Resources and is a collection of tools and
-libraries that I personally find useful for development.
+ELDR -- Because you're not getting any younger.
+===============================================
 
+Life is too short to be writing what amounts to the same boilerplate code in
+every application you develop. The same logging initialization. The same
+arguments to parse. The same error handling. You get the picture.
 
 .. toctree::
     :maxdepth: 2

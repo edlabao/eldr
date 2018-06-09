@@ -16,18 +16,29 @@ from eldr.app.errors import AppError
 
 class App(object):
     """
-    Application abstract base class.
+    Application abstract base class.::
+
+        from eldr.app import App
+
+        class MyApp(App):
+            #
+            # Define the rest of the class
+            #
+
+        if __name__ == "__main__":
+            app = App()
+            app.run()
+
+    Certain :class:`App` parameters can be overridden at object instantiation time
+    by passing keyword arguments to the constructor.::
+
+        app = MyApp(log_level="DEBUG", silent=True, log_level="DEBUG")
+
     """
 
     #__metaclass__ = abc.ABCMeta
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialization method for the App class.
-
-        Certain App parameters can be overridden at object instantiation time by
-        passing keyword arguments to the constructor.
-        """
 
         # Process information.
         self._app_name = self.__class__.__name__.lower()
@@ -52,28 +63,54 @@ class App(object):
 
     def add_arguments(self, parser):
         """
-        Optional method that can be defined by subclasses to add support for
-        additional command-line arguments.
+        *Virtual.* Optional method that can be defined by subclasses to add
+        support for additional command-line arguments.
 
-        This method is passed an ArgumentParser object that is used to add
-        custom arguments via its add_argument() method. This method is only
-        intended for adding new arguments. Actual processing of the arguments
-        will be performed in the process_arguments() method.
+        This method is passed a **parser** parameter which is an instance of
+        :class:`argparse.ArgumentParser` that is used to add custom arguments
+        via :func:`argparse.ArgumentParser.add_argument()`. This method should
+        only be used to add new arguments to the parser. Actual processing of
+        the arguments should be performed in the :func:`App.process_arguments()`
+        method.
+
+        For example::
+
+            def add_arguments(self, parser):
+                parser.add_argument("--foo", dest="foo")
+                parser.add_argument("--bar", action="store_true", dest="bar")
+
         """
         pass
 
     def get_log_formatter(self):
         """
-        Return a log formatter.
+        Return a log formatter object.
+
+        The default log formatter :
+        ``%(asctime)s %(levelname)s %(message)s``.
+
+        *Returns*: An instance of :class:`logging.Formatter`.
         """
         format_fields = ["%(asctime)s",
                          "%(levelname)s",
                          "%(message)s"]
         return logging.Formatter(" ".join(format_fields))
 
-    def get_log_handler(self, silent):
+    def get_log_handler(self, silent=False):
         """
-        Return a log handler.
+        * *silent* (bool): If True, turn on silent mode.
+
+        Return a log handler. By default an instance of
+        :class:`logging.StreamHandler` that logs to :mod:`sys.stdout` is
+        returned, but if ``silent=True``, then an instance of
+        :class:`logging.NullHandler` is returned instead, and all logging is
+        effectively silenced.
+
+        Subclasses will generally never call this method directly since it is
+        called as part of log initialization; however, a subclass may overload
+        this method to return a custom logging handler if necessary.
+
+        *Returns*: An instance of :class:`logging.Handler`
         """
         if silent:
             return logging.NullHandler()
@@ -82,7 +119,9 @@ class App(object):
 
     def init_logging(self):
         """
-        Configure output logging.
+        Configure and initialize output logging. Subclasses should not call this
+        method, but it is defined as a public method to allow customization if
+        needed.
         """
 
         self.log = logging.getLogger(self._app_name)
@@ -95,7 +134,16 @@ class App(object):
 
     def log_exception(self):
         """
-        Log the current stack trace.
+        Convenience method that can be used to log the current exception. This
+        is typically used inside an except block, and ensures that the exception
+        is logged with the proper formatting::
+
+            try:
+                # Do something that raises an exception.
+            except Exception:
+                # Handle the exception then log the stack trace.
+                self.log_exception()
+
         """
         for line in traceback.format_exc().split("\n"):
             if line:
@@ -104,39 +152,52 @@ class App(object):
     @property
     def log_level(self):
         """
-        Return the current logging level.
+        *Property.* Return the current logging level.
         """
         return self._log_level
 
     def main(self):
         """
-        Entry point for the application subclass and must be implemented.
+        *Virtual.* Entry point for the application subclass and must be
+        implemented.
         """
         raise NotImplementedError
 
     def process_arguments(self, args, arg_extras):
         """
-        Optional method that can be defined by subclasses to add support for
-        additional command-line arguments.
+        *Virtual*. Optional method that can be defined by subclasses to add
+        support for additional command-line arguments.
 
-        This method is passed the Namespace object returned by the
-        ArgParser.parse_args().
+        This method is passed the **args** parameter which is a
+        :class:`Namespace` object returned by
+        :func:`argparse.ArgParser.parse_args()`. In addition, if there were any
+        unsupported arguments passed to the program that were not parsed, these
+        are added to the **arg_extras** list.
+
+        For example::
+
+            def process_arguments(self, args, arg_extras):
+                if args.foo is not None:
+                    self.foo = args.foo
+                if args.bar is not None:
+                    self.bar = args.bar
+                self.baz_list = arg_extras
+
         """
         pass
 
     def run(self, args=None):
         """
-        Application entry point.
+        * *args* (dict): If an args parameter is specified, it is parsed for
+          command-line options rather than :mod:`sys.argv`. This is primarily
+          used for testing.
 
-        Unlike the execute() method, subclasses should only call this method and
-        not implement it as it performs application initialization and
-        ultimately calls the execute() method.
+        Subclasses call this method to start the application. This should only
+        be called and not overridden by applications as this performs
+        initialization tasks to prepare the application prior to calling the
+        :func:`App.main()` method.
 
-        :Parameters:
-            args : List of arguments to process instead of sys.argv.
-
-        :Returns:
-            status : Application exit code.
+        *Returns:* An integer representing the application exit code.
         """
 
         try:
@@ -186,7 +247,7 @@ class App(object):
     @property
     def status(self):
         """
-        Return the current application status code.
+        *Property.* Return the current application status code.
         """
         return self._status
 
@@ -222,19 +283,28 @@ class App(object):
     @staticmethod
     def name_to_log_level(level_name, default=None):
         """
+        * *level_name* (str): Logging level name to convert to a logging level
+          code.
+        * *default* (int): Logging level to return if the name is not
+          supported.
+
         Convert the specified logging level name to the corresponding logging
-        constant (e.g. logging.DEBUG, logging.WARN).
+        constant (e.g. :func:`logging.DEBUG`, :func:`logging.WARN`). If the
+        specified level_name is not recognized, the specified optional default
+        is returned. If no default is specified and the level_name is not
+        recognized, :class:`None` is returned.
 
-        If the specified level_name is not recognized, the specified optional
-        default is returned. If no default is specified and the level_name is
-        not recognized, None is returned.
+        Valid level names:
 
-        :Parameters:
-            level_name : Logging level name to convert to a logging level code.
-            default : Logging level to return if the name is not supported.
+        * DEBUG
+        * INFO
+        * WARN
+        * WARNING
+        * ERROR
+        * CRIT
+        * CRITICAL
 
-        :Returns:
-            level : Logging level constant.
+        *Returns:* An integer corresponding to a logging level.
         """
 
         level = default
