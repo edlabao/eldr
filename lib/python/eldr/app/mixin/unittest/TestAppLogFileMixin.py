@@ -24,10 +24,10 @@ sys.path.insert(0, _path[:_path.find("/eldr/app")])
 
 from eldr.app import App
 from eldr.app.errors import AppInitializationError
-from eldr.app.mixin.logfile import AppLogFileMixin
+from eldr.app.mixin.logfile import LogFileMixin
 
 
-class TestApp(AppLogFileMixin, App):
+class TestApp(LogFileMixin, App):
 
     def __init__(self, *args, **kwargs):
 

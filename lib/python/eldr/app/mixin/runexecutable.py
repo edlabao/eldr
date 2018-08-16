@@ -10,10 +10,18 @@ import sys
 
 from subprocess import Popen, PIPE, STDOUT
 from eldr.app.codes import AppStatusOkay
-from eldr.app.errors import AppRunExecutableError
+from eldr.app.errors import AppError
 
 
-class AppRunExecutableMixin(object):
+class RunExecutableError(AppError):
+    """
+    Exception that should be raised if an executable is run and exits with an
+    unexpected exit status.
+    """
+    pass
+
+
+class RunExecutableMixin(object):
     """
     Application framework mixin class that adds executable call support.
 
@@ -21,7 +29,7 @@ class AppRunExecutableMixin(object):
 
     def __init__(self, *args, **kwargs):
 
-        super(AppRunExecutableMixin, self).__init__(*args, **kwargs)
+        super(RunExecutableMixin, self).__init__(*args, **kwargs)
 
         self._executable_status = AppStatusOkay
 
@@ -98,4 +106,4 @@ class AppRunExecutableMixin(object):
                 msg.append("  > %s" % line)
 
             # Raise the exception with the error message.
-            raise AppRunExecutableError("\n".join(msg))
+            raise RunExecutableError("\n".join(msg))

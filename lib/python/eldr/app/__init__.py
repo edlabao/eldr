@@ -215,6 +215,7 @@ class App(object):
 
             # Output a header and execute the application.
             self.log.info("-" * 72)
+            self.log.info("STARTING {}".format(self._program_name))
             self.main()
 
         except AppError:
@@ -222,6 +223,10 @@ class App(object):
             # handled the error (e.g. logged the error, set the status code) so
             # do nothing.
             pass
+
+        except SystemExit, err:
+            self.log.error("SystemExit exception caught.")
+            self._status = err.code
 
         except Exception, err:
 

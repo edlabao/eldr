@@ -20,11 +20,11 @@ sys.path.insert(0, _path[:_path.find("/eldr/app")])
 
 from eldr.app import App
 from eldr.app.codes import AppStatusOkay
-from eldr.app.errors import AppRunExecutableError
-from eldr.app.mixin.runexecutable import AppRunExecutableMixin
+from eldr.app.mixin.runexecutable import RunExecutableMixin
+from eldr.app.mixin.runexecutable import RunExecutableError
 
 
-class TestApp(AppRunExecutableMixin, App):
+class TestApp(RunExecutableMixin, App):
 
     def __init__(self, *args, **kwargs):
 
@@ -82,7 +82,7 @@ class Test(unittest.TestCase):
                 if "No such file" in line:
                     no_such_file = True
 
-        except AppRunExecutableError:
+        except RunExecutableError:
             self.assertTrue(app.executable_status > 0)
             self.assertTrue(no_such_file)
 

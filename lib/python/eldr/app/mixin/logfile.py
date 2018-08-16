@@ -46,14 +46,14 @@ import sys
 from eldr.app.errors import AppInitializationError
 
 
-class AppLogFileMixin(object):
+class LogFileMixin(object):
     """
     Application framework mixin class that adds logfile support.
     """
 
     def __init__(self, *args, **kwargs):
 
-        super(AppLogFileMixin, self).__init__(*args, **kwargs)
+        super(LogFileMixin, self).__init__(*args, **kwargs)
 
         # Process information used for the logging format.
         self._pid = os.getpid()
@@ -137,7 +137,7 @@ class AppLogFileMixin(object):
         Add AppLogFileMixin command-line arguments.
         """
 
-        super(AppLogFileMixin, self)._add_arguments()
+        super(LogFileMixin, self)._add_arguments()
 
         self._arg_parser.add_argument("--log-file",
                                       action="store",
@@ -148,7 +148,7 @@ class AppLogFileMixin(object):
         Process AppLogFileMixin command-line arguments.
         """
 
-        super(AppLogFileMixin, self)._process_arguments(args)
+        super(LogFileMixin, self)._process_arguments(args)
 
         # Log file.
         self._set_log_file(self._args.log_file)
