@@ -1,5 +1,5 @@
 
-Coverage Coverage
+Code Coverage
 =================
 
 Code coverage is generated for this project using the python coverage tool. The
