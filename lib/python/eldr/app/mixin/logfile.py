@@ -99,9 +99,9 @@ class LogFileMixin(object):
         # Create the output log first directory if it doesn't exist.
         try:
             if not os.path.exists(self.log_dir):
-                os.makedirs(self.log_dir, 0777)
+                os.makedirs(self.log_dir, 0o777)
 
-        except Exception, err:
+        except Exception as err:
             sys.stderr.write("**ERROR** Unable to create %s\n" % self.log_dir)
             sys.stderr.write("**ERROR** > %s\n" % err)
             raise AppInitializationError

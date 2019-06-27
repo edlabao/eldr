@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 eldr_coverage_report
 
@@ -25,7 +25,6 @@ sys.path.insert(0, __path)
 ##
 # BOOTSTRAP: END
 ##
-
 from eldr.app import App
 from eldr.app.mixin.runexecutable import RunExecutableMixin
 
@@ -69,7 +68,7 @@ class EldrCoverageReport(RunExecutableMixin, App):
     def _generate_html(self):
 
         # Run the coverage command to generate an html report.
-        cmd = ["/usr/bin/coverage",
+        cmd = ["coverage",
                "html",
                "-d", self._html_dir]
         for line in self.run_executable(cmd, cwd=self._work_dir):
@@ -78,7 +77,7 @@ class EldrCoverageReport(RunExecutableMixin, App):
     def _run_coverage(self, target):
 
         # Run the coverage command to generate the coverage reports.
-        cmd = ["/usr/bin/coverage",
+        cmd = ["coverage",
                "run",
                "-a",
                "--branch",

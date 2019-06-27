@@ -69,6 +69,7 @@ class Test(unittest.TestCase):
             # Remove the log handler we generated (log handlers are singletons
             # so subsequent tests may have unexpected results if we don't remove
             # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
@@ -96,6 +97,7 @@ class Test(unittest.TestCase):
             # Remove the log handler we generated (log handlers are singletons
             # so subsequent tests may have unexpected results if we don't remove
             # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
@@ -122,6 +124,7 @@ class Test(unittest.TestCase):
             # Remove the log handler we generated (log handlers are singletons
             # so subsequent tests may have unexpected results if we don't remove
             # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
@@ -191,6 +194,7 @@ class Test(unittest.TestCase):
             # Remove the log handler we generated (log handlers are singletons
             # so subsequent tests may have unexpected results if we don't remove
             # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(temp_root)
 
@@ -217,6 +221,7 @@ class Test(unittest.TestCase):
             # Remove the log handler we generated (log handlers are singletons
             # so subsequent tests may have unexpected results if we don't remove
             # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
@@ -266,6 +271,7 @@ class Test(unittest.TestCase):
             # Remove the log handler we generated (log handlers are singletons
             # so subsequent tests may have unexpected results if we don't remove
             # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 

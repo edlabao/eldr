@@ -69,7 +69,10 @@ class RunExecutableMixin(object):
 
         # Build the kwargs for the popen command. There are certain options that
         # we always want set, but we extend it with any user-provided kwargs.
-        popen_kwargs = {"bufsize": 1, "stderr": STDOUT, "stdout": PIPE}
+        popen_kwargs = {"bufsize": 1,
+                        "universal_newlines": True,
+                        "stderr": STDOUT,
+                        "stdout": PIPE}
         popen_kwargs.update(kwargs)
 
         # Run the command with popen, redirecting sterr to stdout and piping the
@@ -87,7 +90,8 @@ class RunExecutableMixin(object):
             else:
                 break
 
-        # Wait for the process to complete.
+        # Close the filehandle then wait for the process to complete.
+        pout.close()
         p.wait()
 
         # Capture the exit status of the executable.
