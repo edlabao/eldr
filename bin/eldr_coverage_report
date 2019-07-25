@@ -88,7 +88,7 @@ class EldrCoverageReport(RunExecutableMixin, App):
 
     def _test_files(self):
         # Generate a list of test files to run coverae reports on.
-        for (dirpath, dirs, files) in os.walk(self._source_dir):
+        for (dirpath, _, files) in os.walk(self._source_dir):
             if self._target_file in files:
                 target = "{}/{}".format(dirpath, self._target_file)
                 yield target
