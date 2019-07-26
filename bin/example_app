@@ -9,7 +9,7 @@ import sys
 # Bootstrapping code to ensure we can find all the right modules. All other
 # local imports should be done after this block.
 ##
-__path = os.path.dirname(os.path.realpath(__file__)) + "/../lib/python"
+__path = os.path.dirname(os.path.realpath(__file__)) + "/../python"
 sys.path.insert(0, __path)
 ##
 # BOOTSTRAP: END
@@ -22,7 +22,14 @@ class TestApp(App):
 
     def main(self):
         self.log.info("Entered main()")
+        self.do_stuff()
         self.log.info("Leaving main()")
+
+    def do_stuff(self):
+        """
+        Do important stuff.
+        """
+        self.log.info("Doing stuff...")
 
 
 if __name__ == "__main__":

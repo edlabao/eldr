@@ -20,7 +20,7 @@ import tempfile
 # Bootstrapping code to ensure we can find all the right modules. All other
 # local imports should be done after this block.
 ##
-__path = os.path.dirname(os.path.realpath(__file__)) + "/../lib/python"
+__path = os.path.dirname(os.path.realpath(__file__)) + "/../python"
 sys.path.insert(0, __path)
 ##
 # BOOTSTRAP: END
