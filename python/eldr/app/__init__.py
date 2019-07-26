@@ -43,7 +43,11 @@ class App(object):
         # Process information.
         self._app_name = self.__class__.__name__.lower()
         self._program_name = os.path.basename(sys.argv[0])
-        self._user = pwd.getpwuid(os.getuid()).pw_name
+
+        try:
+            self._user = pwd.getpwuid(os.getuid()).pw_name
+        except:
+            self._user = os.environ.get("USER")
 
         # Argument parsing.
         self._args = None
