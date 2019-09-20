@@ -9,8 +9,8 @@ import os
 import sys
 
 from subprocess import Popen, PIPE, STDOUT
-from eldr.app.codes import AppStatusOkay
-from eldr.app.errors import AppError
+from jaraf.app.codes import AppStatusOkay
+from jaraf.app.errors import AppError
 
 
 class RunExecutableError(AppError):

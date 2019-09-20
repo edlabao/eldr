@@ -1,5 +1,5 @@
 
-eldr.app
+jaraf.app
 ========
-.. automodule:: eldr.app
+.. automodule:: jaraf.app
   :members:

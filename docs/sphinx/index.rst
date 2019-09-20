@@ -20,8 +20,8 @@ boring application features so that developers can get to the good stuff sooner.
     :maxdepth: 2
     :caption: Python Modules:
 
-    modules/eldr_app
-    modules/eldr_app_mixins
+    modules/jaraf_app
+    modules/jaraf_app_mixins
 
 .. toctree::
     :maxdepth: 2

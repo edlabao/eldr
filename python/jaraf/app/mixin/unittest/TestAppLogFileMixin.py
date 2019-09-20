@@ -17,14 +17,14 @@ import unittest
 # local imports should be done after this block.
 ##
 _path = os.path.realpath(__file__)
-sys.path.insert(0, _path[:_path.find("/eldr/app")])
+sys.path.insert(0, _path[:_path.find("/jaraf/app")])
 ##
 # BOOTSTRAP: END
 ##
 
-from eldr.app import App
-from eldr.app.errors import AppInitializationError
-from eldr.app.mixin.logfile import LogFileMixin
+from jaraf.app import App
+from jaraf.app.errors import AppInitializationError
+from jaraf.app.mixin.logfile import LogFileMixin
 
 
 class TestApp(LogFileMixin, App):

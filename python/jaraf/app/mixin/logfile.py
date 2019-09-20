@@ -20,8 +20,8 @@ behavior:
 
 ::
 
-    from eldr.app import App
-    from eldr.app.mixin.logfile import AppLogFileMixin
+    from jaraf.app import App
+    from jaraf.app.mixin.logfile import AppLogFileMixin
 
     class MyApp(AppLogFileMixin, App):
         #
@@ -43,7 +43,7 @@ import os
 import socket
 import sys
 
-from eldr.app.errors import AppInitializationError
+from jaraf.app.errors import AppInitializationError
 
 
 class LogFileMixin(object):

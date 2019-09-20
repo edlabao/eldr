@@ -15,7 +15,7 @@ sys.path.insert(0, __path)
 # BOOTSTRAP: END
 ##
 
-from eldr.app import App
+from jaraf.app import App
 
 
 class TestApp(App):

@@ -7,7 +7,7 @@ FROM photon:3.0
 
 # Variables used for generating the image tag.
 ARG REGISTRY=
-ARG ORGANIZATION=eldr
+ARG ORGANIZATION=jaraf
 ARG APP_NAME=python3-devel
 ARG APP_VERSION=3.7.3
 ARG APP_BUILD_NUMBER=1

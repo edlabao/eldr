@@ -10,15 +10,15 @@ import sys
 import time
 import traceback
 
-from eldr.app.codes import AppStatusOkay, AppStatusError
-from eldr.app.errors import AppError
+from jaraf.app.codes import AppStatusOkay, AppStatusError
+from jaraf.app.errors import AppError
 
 
 class App(object):
     """
     Application abstract base class.::
 
-        from eldr.app import App
+        from jaraf.app import App
 
         class MyApp(App):
             #

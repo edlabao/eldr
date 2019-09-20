@@ -12,19 +12,21 @@ import sys
 # local imports should be done after this block.
 ##
 _path = os.path.realpath(__file__)
-sys.path.insert(0, _path[:_path.find("/eldr/app")])
+sys.path.insert(0, _path[:_path.find("/jaraf/app")])
 ##
 # BOOTSTRAP: END
 ##
 
 import unittest
 
-from TestApp import Test as TestApp
+from TestAppLogFileMixin import Test as TestAppLogFileMixin
+from TestAppRunExecutableMixin import Test as TestAppRunExecutableMixin
 
 
 # Initialize a test suite and add all of the TestCases.
 TestHandlerSuite = unittest.TestSuite()
-TestHandlerSuite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestApp))
+TestHandlerSuite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestAppLogFileMixin))
+TestHandlerSuite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestAppRunExecutableMixin))
 
 
 if __name__ == "__main__":
