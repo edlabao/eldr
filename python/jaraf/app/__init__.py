@@ -228,10 +228,6 @@ class App(object):
             # do nothing.
             pass
 
-        except SystemExit as err:
-            self.log.error("SystemExit exception caught.")
-            self._status = err.code
-
         except Exception as err:
 
             # When a non-AppError exception is raised, set the status and log
