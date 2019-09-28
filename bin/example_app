@@ -34,4 +34,4 @@ class TestApp(App):
 
 if __name__ == "__main__":
     app = TestApp()
-    app.run()
+    sys.exit(app.run())
