@@ -6,6 +6,7 @@ import argparse
 import logging
 import os
 import pwd
+import resource
 import sys
 import time
 import traceback
@@ -243,9 +244,20 @@ class App(object):
             self.log.error("Unhandled exception: {}".format(err))
             self.log_exception()
 
+        # Calculate some run stats.
+        elapsed_time = time.time() - self._start_time
+        rusage_self = resource.getrusage(resource.RUSAGE_SELF)
+        rusage_child = resource.getrusage(resource.RUSAGE_CHILDREN)
+        max_rss = float(rusage_self.ru_maxrss + rusage_child.ru_maxrss) / float(2**20)
+        cpu_time = rusage_self.ru_utime + rusage_self.ru_stime \
+            + rusage_child.ru_utime + rusage_self.ru_stime
+
         # Output a footer and return the application status code.
         self.log.info("FINISHED {}".format(self._program_name))
         self.log.info("- Exit status: {}".format(self.status))
+        self.log.info("- Elapsed time: {:0.5f} secs".format(elapsed_time))
+        self.log.info("- Max RSS: {:0.5f} MiB".format(max_rss))
+        self.log.info("- CPU time: {:0.5f} secs".format(cpu_time))
 
         return self.status
 
