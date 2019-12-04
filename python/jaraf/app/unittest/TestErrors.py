@@ -41,6 +41,16 @@ class Test(unittest.TestCase):
         except AppError as err:
             self.assertEqual(err.status, AppStatusError)
 
+    def test_apperror_msg(self):
+        """
+        Verify an AppError exception with a custom message.
+        """
+
+        try:
+            raise AppError("Hello, World")
+        except AppError as err:
+            self.assertEqual("Hello, World", str(err))
+
     def test_apperror_status(self):
         """
         Verify an AppError exception with a custom status.

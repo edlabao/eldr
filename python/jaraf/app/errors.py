@@ -14,7 +14,7 @@ class AppError(Exception):
     """
 
     def __init__(self, *args, **kwargs):
-        super(AppError, self).__init__()
+        super(AppError, self).__init__(*args)
         self._status = kwargs.get("status", AppStatusError)
 
     @property
@@ -29,7 +29,7 @@ class AppArgumentError(AppError):
     """
 
     def __init__(self, *args, **kwargs):
-        super(AppArgumentError, self).__init__(**kwargs)
+        super(AppArgumentError, self).__init__(*args, **kwargs)
         self._status = kwargs.get("status", AppStatusArgumentError)
 
 
@@ -40,5 +40,5 @@ class AppInitializationError(AppError):
     """
 
     def __init__(self, *args, **kwargs):
-        super(AppInitializationError, self).__init__(**kwargs)
+        super(AppInitializationError, self).__init__(*args, **kwargs)
         self._status = kwargs.get("status", AppStatusInitializationError)
