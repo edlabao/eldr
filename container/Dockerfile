@@ -5,16 +5,13 @@
 #-------------------------------------------------------------------------------
 FROM photon:3.0
 
-# Variables used for generating the image tag.
-ARG REGISTRY=
-ARG ORGANIZATION=jaraf
-ARG APP_NAME=python3-devel
-ARG APP_VERSION=3.7.3
-ARG APP_BUILD_NUMBER=1
+# Build variables.
+ARG APP_NAME
+ARG APP_VERSION
+ARG GIT_REF
+ARG GIT_URL
 
-# Other build variables.
-ARG COMMIT_HASH=n/a
-ARG MAINTAINER=n/a
+ARG MAINTAINER=edlabao-dev@gmail.com
 
 # Install everything under the install/ directory to the root of the image.
 ADD install /
@@ -43,9 +40,9 @@ LABEL \
     maintainer="${MAINTAINER}" \
     org.label-schema.schema-version="1.0.0" \
     org.label-schema.name="${APP_NAME}" \
-    org.label-schema.description="Python 3 development image" \
-    org.label-schema.vcs-url="" \
-    org.label-schema.vcs-ref="${COMMIT_HASH}" \
+    org.label-schema.description="Just another rakish application framework" \
+    org.label-schema.vcs-url="${GIT_URL}" \
+    org.label-schema.vcs-ref="${GIT_REF}" \
     org.label-schema.version="${APP_VERSION}"
 
 # Set the default command to print the motd which contains some helpful
