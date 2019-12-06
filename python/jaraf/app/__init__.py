@@ -245,7 +245,7 @@ class App(object):
             self.log_exception()
 
         # Calculate some run stats.
-        elapsed_time = time.time() - self._start_time
+        elapsed_time = self.readable_elapsed_secs(time.time() - self._start_time)
         rusage_self = resource.getrusage(resource.RUSAGE_SELF)
         rusage_child = resource.getrusage(resource.RUSAGE_CHILDREN)
 
@@ -262,9 +262,9 @@ class App(object):
         # Output a footer and return the application status code.
         self.log.info("FINISHED {}".format(self._program_name))
         self.log.info("- exit status: {}".format(self.status))
-        self.log.info("- elapsed time: {:0.5f} secs".format(elapsed_time))
-        self.log.info("- cpu time: {:0.5f} secs".format(cpu_time))
-        self.log.info("- max rss: {:0.5f} MiB".format(max_rss))
+        self.log.info("- elapsed time: {}".format(elapsed_time))
+        self.log.info("- cpu time: {:0.3f} secs".format(cpu_time))
+        self.log.info("- max rss: {:0.3f} MiB".format(max_rss))
 
         return self.status
 
@@ -348,3 +348,23 @@ class App(object):
             level = logging.CRITICAL
 
         return level
+
+    @staticmethod
+    def readable_elapsed_secs(elapsed):
+        """
+        * *elapsed* (float): Elapsed seconds to convert.
+
+        Convert an elapsed time expressed in seconds to a more human-readable
+        format. If the elapsed time is less than 60 seconds, return a string in
+        the form "%.3fs". If the elapsed time is 60 seconds or greater, return a
+        string in the form "%02d:%02d:%06.3f".
+
+        *Returns:* An easier to read elapsed time string.
+        """
+        if elapsed >= 60:
+            hours = int(elapsed / 3600)
+            mins = int((elapsed % 3600) / 60)
+            secs = float((elapsed % 3600.0) % 60.0)
+            return "{:02d}:{:02d}:{:06.3f}".format(hours, mins, secs)
+        else:
+            return "{:.3f}s".format(elapsed)
