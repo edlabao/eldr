@@ -66,6 +66,7 @@ help:
 clean:
 	@find python -depth -name "*__pycache__" -exec rm -rf {} \;
 	@find python -name "*.pyc" -exec rm -f {} \;
+	@rm -rf container/install/tmp
 
 # Run an interactive docker session for development and testing.
 # For macs, we need to pass in extra dns options to resolve the coda mongodb
@@ -77,11 +78,12 @@ exec:
 		-w /opt/develop \
 		$(helper_image) bash
 
-#
-# Package the application into a docker image.
-#
-package:
-	cd $(docker_dir) \
+# Build the container image.
+build:
+	mkdir -p container/install/tmp \
+	&& cp -r python container/install/tmp \
+	&& cp README.md container/install/tmp \
+	&& cd $(docker_dir) \
 	&& docker build \
 		--build-arg APP_NAME=jaraf \
 		--build-arg APP_VERSION=$(version) \

@@ -16,8 +16,8 @@ ARG MAINTAINER=edlabao-dev@gmail.com
 # Install everything under the install/ directory to the root of the image.
 ADD install /
 
-# Install the application and dependencies and perform cleanup tasks in a
-# single RUN step to keep our image footprint as small as possible.
+# Install the python and basic tools and perform cleanup tasks in a single RUN
+# step to keep our image footprint as small as possible.
 RUN tdnf update -y \
     && tdnf install -y \
     gcc \
@@ -30,6 +30,13 @@ RUN tdnf update -y \
     && tdnf clean all \
     && rm -rf /var/cache/tdnf/* \
     && ln -s /usr/bin/python3 /usr/bin/python
+
+# Install the framework in a separate later as this is the part most likely to
+# change between builds. This allows us to re-use the previous layers when we
+# have to rebuild.
+RUN cd /tmp/python \
+    && python setup.py install \
+    && rm -rf /tmp/*
 
 # Add some hopefully useful labels.
 #
