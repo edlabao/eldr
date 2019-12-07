@@ -25,8 +25,11 @@ RUN tdnf update -y \
     python3-devel \
     python3-pip \
     && pip3 install --upgrade pip \
-    && pip install coverage setuptools \
-    && pip install sphinx \
+    && pip install \
+    coverage \
+    setuptools \
+    sphinx \
+    sphinx_rtd_theme \
     && tdnf clean all \
     && rm -rf /var/cache/tdnf/* \
     && ln -s /usr/bin/python3 /usr/bin/python

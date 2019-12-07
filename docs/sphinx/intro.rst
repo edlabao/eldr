@@ -1,34 +1,34 @@
 
 Overview
 ========
-ELDR is an application framework, that is to say, it's a collection of python
+JARAF is an application framework, that is to say, it's a collection of python
 code that can help jumpstart the development of command-line tools and
 applications providing the developer is willing to follow a few rules and
 conventions to use the framework.
 
 The framework itself is fairly straighforward to use. An application will
-inherit from a base application class named :class:`~jaraf.app.App` and implement
-one required method (:meth:`~jaraf.app.App.main()`). From there, the application
+inherit from a base application class named :class:`~jaraf.App` and implement
+one required method (:meth:`~jaraf.App.main()`). From there, the application
 can optionally implement a number of other prescribed methods to set up and
 customize itself. For example, an application that needs custom command-line
-arguments will implement the :meth:`~jaraf.app.App.add_arguments()` and
-:meth:`~jaraf.app.App.process_arguments()` methods.
+arguments will implement the :meth:`~jaraf.App.add_arguments()` and
+:meth:`~jaraf.App.process_arguments()` methods.
 
 A lot of simple applications will probably only ever need the
-:class:`~jaraf.app.App` class, but for some more complex applications, additional
+:class:`~jaraf.App` class, but for some more complex applications, additional
 features are provided through mixin classes.
 
 
 Application Base Class
 ======================
-The application base class, :class:`~jaraf.app.App`, is a virtual base class that
+The application base class, :class:`~jaraf.App`, is a virtual base class that
 must be inherited by an application in order to use the framework. It provides
 some basic features useful to most command-line applications. This includes
 exception handling to prevent an application from abruptly exiting, a
 best-effort exit code, logging methods, and built-in command-line arguments to
 set various parameters.
 
-It has one virtual method named :meth:`~jaraf.app.App.main()` that must be
+It has one virtual method named :meth:`~jaraf.App.main()` that must be
 implemented. A minimalist application need only implement this one method to use
 the framework. However, there are other virtual methods that can be implemented
 and public methods that can be overloaded that enable developers to further
@@ -36,7 +36,7 @@ customize an application.
 
 Here's the obligatory starting example::
 
-    from jaraf.app import App
+    from jaraf import App
 
     class HelloWorldApp(App):
         def main(self):
@@ -83,9 +83,9 @@ Because the application will run non-interactively, we'll probably also want to
 log its output to a log file. Such an application class could be defined like
 so::
 
-    from jaraf.app import App
-    from jaraf.app.mixin.cron import CronMixin
-    from jaraf.app.mixin.logfile import LogfileMixin
+    from jaraf import App
+    from jaraf.mixin.cron import CronMixin
+    from jaraf.mixin.logfile import LogfileMixin
 
     class HelloWorldApp(CronMixin, LogfileMixin, App):
         # Class definition follows...

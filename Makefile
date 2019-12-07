@@ -19,7 +19,7 @@ default_version = 0.1.0
 docker_dir = container
 
 # Helper image to use for certain targets.
-helper_image = eldr/jaraf:0.1.0
+helper_image = eldr/jaraf:0.1.0-2-g39fb0b0
 
 # Docker registry parameter defaults.
 reg_namespace = eldr
@@ -30,7 +30,7 @@ reg_repo = jaraf
 repo_url = https://github.com/edlabao/jaraf
 
 # Get the current version tag.
-version = $(shell git describe >& /dev/null || echo $(default_version))
+version = $(shell git describe 2> /dev/null || echo $(default_version))
 
 # Set the coverage test command to use for testing.
 cov_cmd = coverage3
@@ -39,6 +39,15 @@ ifeq (, $(shell which coverage3 2> /dev/null))
 		-v `pwd`/..:/opt/develop \
 		-w /opt/develop/coverage \
 		$(helper_image) coverage3
+endif
+
+# Set the sphinx doc build command to use for testing.
+sphinx_cmd = sphinx-build
+ifeq (, $(shell which sphinx-build 2> /dev/null))
+	sphinx_cmd = docker run --rm \
+		-v `pwd`:/opt/develop \
+		-w /opt/develop \
+		$(helper_image) sphinx-build
 endif
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -87,7 +96,12 @@ build:
 clean:
 	@find python -depth -name "*__pycache__" -exec rm -rf {} \;
 	@find python -name "*.pyc" -exec rm -f {} \;
-	@rm -rf container/install/tmp coverage
+	@rm -rf container/install/tmp coverage docs/html
+
+# Genereate the sphinx documentation.
+docs:
+	@mkdir -p docs/html
+	$(sphinx_cmd) -E -j 4 docs/sphinx docs/html
 
 # Run an interactive docker session for development and testing.
 # For macs, we need to pass in extra dns options to resolve the coda mongodb
@@ -99,6 +113,7 @@ exec:
 		-w /opt/develop \
 		$(helper_image) bash
 
+# Run unittests and generate a coverage report.
 test:
 	@mkdir -p coverage
 	@cd coverage \
@@ -113,3 +128,5 @@ test:
 		&& $(cov_cmd) html -d html \
 		&& $(cov_cmd) report -m
 
+
+.PHONY: docs
