@@ -115,7 +115,7 @@ exec:
 
 # Run unittests and generate a coverage report.
 test:
-	@mkdir -p coverage
+	@mkdir -p coverage html/coverage
 	@cd coverage \
 		&& $(cov_cmd) run -a \
 			--branch \
@@ -125,7 +125,7 @@ test:
 			--branch \
 			--omit "*/unittest/*" \
 			../python/jaraf/mixin/unittest/TestAll.py \
-		&& $(cov_cmd) html -d html \
+		&& $(cov_cmd) html -d ../docs/html/coverage \
 		&& $(cov_cmd) report -m
 
 

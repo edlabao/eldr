@@ -19,14 +19,14 @@ sys.path.insert(0, os.path.abspath('../../lib/python'))
 
 # -- Project information -----------------------------------------------------
 
-project = u'ELDR'
-copyright = u'2018, Ed Labao'
+project = u'JARAF'
+copyright = u'2019, Ed Labao'
 author = u'Ed Labao'
 
 # The short X.Y version
-version = u'0.0.1'
+version = u'0.1.0'
 # The full version, including alpha/beta/rc tags
-release = u'0.0.1'
+release = u'0.1.0'
 
 
 # -- General configuration ---------------------------------------------------
