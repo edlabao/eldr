@@ -102,9 +102,14 @@ exec:
 test:
 	@mkdir -p coverage
 	@cd coverage \
-		&& $(cov_cmd) run -a --branch \
+		&& $(cov_cmd) run -a \
+			--branch \
 			--omit "*/unittest/*" \
-			../python/jaraf/app/unittest/TestAll.py \
+			../python/jaraf/unittest/TestAll.py \
+		&& $(cov_cmd) run -a \
+			--branch \
+			--omit "*/unittest/*" \
+			../python/jaraf/mixin/unittest/TestAll.py \
 		&& $(cov_cmd) html -d html \
 		&& $(cov_cmd) report -m
 

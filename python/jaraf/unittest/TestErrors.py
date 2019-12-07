@@ -15,18 +15,18 @@ import unittest
 # local imports should be done after this block.
 ##
 _path = os.path.realpath(__file__)
-sys.path.insert(0, _path[:_path.find("/jaraf/app")])
+sys.path.insert(0, _path[:_path.find("/jaraf")])
 ##
 # BOOTSTRAP: END
 ##
 
-from jaraf.app.codes import (AppStatusArgumentError,
-                             AppStatusError,
-                             AppStatusInitializationError,
-                             AppStatusOkay)
-from jaraf.app.errors import (AppArgumentError,
-                              AppError,
-                              AppInitializationError)
+from jaraf.codes import (AppStatusArgumentError,
+                         AppStatusError,
+                         AppStatusInitializationError,
+                         AppStatusOkay)
+from jaraf.errors import (AppArgumentError,
+                          AppError,
+                          AppInitializationError)
 
 
 class Test(unittest.TestCase):

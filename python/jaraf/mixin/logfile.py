@@ -43,7 +43,7 @@ import os
 import socket
 import sys
 
-from jaraf.app.errors import AppInitializationError
+from jaraf.errors import AppInitializationError
 
 
 class LogFileMixin(object):

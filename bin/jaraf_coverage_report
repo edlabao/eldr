@@ -25,8 +25,8 @@ sys.path.insert(0, __path)
 ##
 # BOOTSTRAP: END
 ##
-from jaraf.app import App
-from jaraf.app.mixin.runexecutable import RunExecutableMixin
+from jaraf import App
+from jaraf.mixin.runexecutable import RunExecutableMixin
 
 
 class EldrCoverageReport(RunExecutableMixin, App):

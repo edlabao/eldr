@@ -2,10 +2,10 @@
 Application error classes.
 """
 
-from jaraf.app.codes import (AppStatusArgumentError,
-                             AppStatusError,
-                             AppStatusInitializationError,
-                             AppStatusOkay)
+from jaraf.codes import (AppStatusArgumentError,
+                         AppStatusError,
+                         AppStatusInitializationError,
+                         AppStatusOkay)
 
 
 class AppError(Exception):
