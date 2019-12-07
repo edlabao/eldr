@@ -32,6 +32,14 @@ repo_url = https://github.com/edlabao/jaraf
 # Get the current version tag.
 version = $(shell git describe >& /dev/null || echo $(default_version))
 
+# Set the coverage test command to use for testing.
+cov_cmd = coverage3
+ifeq (, $(shell which coverage3 2> /dev/null))
+	cov_cmd = docker run --rm \
+		-v `pwd`/..:/opt/develop \
+		-w /opt/develop/coverage \
+		$(helper_image) coverage3
+endif
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
@@ -61,23 +69,6 @@ help:
 		|| /usr/bin/true
 	@echo ""
 
-# Clean up generated files. This includes files we copied into the docker
-# install directory and python bytecode.
-clean:
-	@find python -depth -name "*__pycache__" -exec rm -rf {} \;
-	@find python -name "*.pyc" -exec rm -f {} \;
-	@rm -rf container/install/tmp
-
-# Run an interactive docker session for development and testing.
-# For macs, we need to pass in extra dns options to resolve the coda mongodb
-# servers.
-exec:
-	@docker run -it --rm \
-		--name codaml-dev \
-		-v `pwd`:/opt/develop \
-		-w /opt/develop \
-		$(helper_image) bash
-
 # Build the container image.
 build:
 	mkdir -p container/install/tmp \
@@ -90,3 +81,30 @@ build:
 		--build-arg GIT_REF= \
 		--build-arg GIT_URL=$(repo_url) \
 		-t $(reg_namespace)/$(reg_repo):$(version) .
+
+# Clean up generated files. This includes files we copied into the docker
+# install directory and python bytecode.
+clean:
+	@find python -depth -name "*__pycache__" -exec rm -rf {} \;
+	@find python -name "*.pyc" -exec rm -f {} \;
+	@rm -rf container/install/tmp coverage
+
+# Run an interactive docker session for development and testing.
+# For macs, we need to pass in extra dns options to resolve the coda mongodb
+# servers.
+exec:
+	@docker run -it --rm \
+		--name codaml-dev \
+		-v `pwd`:/opt/develop \
+		-w /opt/develop \
+		$(helper_image) bash
+
+test:
+	@mkdir -p coverage
+	@cd coverage \
+		&& $(cov_cmd) run -a --branch \
+			--omit "*/unittest/*" \
+			../python/jaraf/app/unittest/TestAll.py \
+		&& $(cov_cmd) html -d html \
+		&& $(cov_cmd) report -m
+
