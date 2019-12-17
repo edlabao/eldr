@@ -21,9 +21,9 @@ behavior:
 ::
 
     from jaraf.app import App
-    from jaraf.app.mixin.logfile import AppLogFileMixin
+    from jaraf.mixin.logfile import LogFileMixin
 
-    class MyApp(AppLogFileMixin, App):
+    class MyApp(LogFileMixin, App):
         #
         # Define the rest of the class
         #
@@ -43,6 +43,7 @@ import os
 import socket
 import sys
 
+from jaraf import getLogger
 from jaraf.errors import AppInitializationError
 
 
@@ -107,7 +108,7 @@ class LogFileMixin(object):
             raise AppInitializationError
 
         # Initialize the logger.
-        self.log = logging.getLogger(self._app_name)
+        self.log = getLogger()
         self.log.setLevel(self._log_level)
 
         formatter = self.get_log_formatter()

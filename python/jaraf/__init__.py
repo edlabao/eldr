@@ -15,6 +15,10 @@ from jaraf.codes import AppStatusOkay, AppStatusError
 from jaraf.errors import AppError
 
 
+def getLogger():
+    return logging.getLogger("jaraf")
+
+
 class App(object):
     """
     Application abstract base class.::
@@ -37,7 +41,7 @@ class App(object):
 
     """
 
-    #__metaclass__ = abc.ABCMeta
+    # __metaclass__ = abc.ABCMeta
 
     def __init__(self, *args, **kwargs):
 
@@ -129,7 +133,7 @@ class App(object):
         needed.
         """
 
-        self.log = logging.getLogger(self._app_name)
+        self.log = getLogger()
         self.log.setLevel(self._log_level)
 
         formatter = self.get_log_formatter()
@@ -152,7 +156,7 @@ class App(object):
         """
         for line in traceback.format_exc().split("\n"):
             if line:
-                self.log.error("> {}".format(line))
+                self.log.error("> %s", line)
 
     @property
     def log_level(self):
@@ -220,7 +224,7 @@ class App(object):
 
             # Output a header and execute the application.
             self.log.info("-" * 72)
-            self.log.info("STARTING {}".format(self._program_name))
+            self.log.info("STARTING %s", self._program_name)
             self.main()
 
         except AppError:
@@ -241,7 +245,7 @@ class App(object):
             if "log" not in dir(self):
                 self.log = logging
 
-            self.log.error("Unhandled exception: {}".format(err))
+            self.log.error("Unhandled exception: %s", err)
             self.log_exception()
 
         # Calculate some run stats.
@@ -260,11 +264,11 @@ class App(object):
         max_rss = float(rusage_self.ru_maxrss + rusage_child.ru_maxrss) / units
 
         # Output a footer and return the application status code.
-        self.log.info("FINISHED {}".format(self._program_name))
-        self.log.info("- exit status: {}".format(self.status))
-        self.log.info("- elapsed time: {}".format(elapsed_time))
-        self.log.info("- cpu time: {:0.3f} secs".format(cpu_time))
-        self.log.info("- max rss: {:0.3f} MiB".format(max_rss))
+        self.log.info("FINISHED %s", self._program_name)
+        self.log.info("- exit status: %d", self.status)
+        self.log.info("- elapsed time: %s", elapsed_time)
+        self.log.info("- cpu time: %0.3f secs", cpu_time)
+        self.log.info("- max rss: %0.3f MiB", max_rss)
 
         return self.status
 
