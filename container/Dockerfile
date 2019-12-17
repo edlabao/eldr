@@ -22,14 +22,16 @@ RUN tdnf update -y \
     && tdnf install -y \
     gcc \
     gzip \
+    make \
     python3-devel \
     python3-pip \
     && pip3 install --upgrade pip \
+    && pip install wheel setuptools \
     && pip install \
     coverage \
-    setuptools \
     sphinx \
     sphinx_rtd_theme \
+    twine \
     && tdnf clean all \
     && rm -rf /var/cache/tdnf/* \
     && ln -s /usr/bin/python3 /usr/bin/python

@@ -6,7 +6,7 @@ with open("../README.md", "r") as fh:
 setuptools.setup(
     name="jaraf-app",
     version="0.0.1",
-    author="Ed Labao",
+    author="Edward Labao",
     author_email="edlabao.dev@gmail.com",
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -1,10 +1,10 @@
 
 Overview
 ========
-JARAF is an application framework, that is to say, it's a collection of python
-code that can help jumpstart the development of command-line tools and
-applications providing the developer is willing to follow a few rules and
-conventions to use the framework.
+JARAF is an application framework, which just just a fancy name for a
+collection of python code that can help jumpstart the development of
+command-line tools and applications, providing a developer is willing to follow
+a few rules and conventions to use the framework.
 
 The framework itself is fairly straighforward to use. An application will
 inherit from a base application class named :class:`~jaraf.App` and implement
@@ -15,7 +15,7 @@ arguments will implement the :meth:`~jaraf.App.add_arguments()` and
 :meth:`~jaraf.App.process_arguments()` methods.
 
 A lot of simple applications will probably only ever need the
-:class:`~jaraf.App` class, but for some more complex applications, additional
+:class:`~jaraf.App` class, but for more complex applications, additional
 features are provided through mixin classes.
 
 
@@ -29,10 +29,10 @@ best-effort exit code, logging methods, and built-in command-line arguments to
 set various parameters.
 
 It has one virtual method named :meth:`~jaraf.App.main()` that must be
-implemented. A minimalist application need only implement this one method to use
-the framework. However, there are other virtual methods that can be implemented
-and public methods that can be overloaded that enable developers to further
-customize an application.
+implemented. A minimalist application need only implement this one method to
+use the framework. However, there are other virtual methods that can be
+implemented and public methods that can be overloaded that enable developers to
+further customize an application.
 
 Here's the obligatory starting example::
 
