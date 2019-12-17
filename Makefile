@@ -19,7 +19,10 @@ default_version = 0.1.0
 docker_dir = container
 
 # Helper image to use for certain targets.
-helper_image = eldr/jaraf:0.1.0-2-g39fb0b0
+helper_image = eldr/jaraf:0.1.0-12-gcc3b837
+ifneq (, $(shell docker images eldr/jaraf:latest | grep eldr 2> /dev/null))
+	helper_image = eldr/jaraf:latest
+endif
 
 # Docker registry parameter defaults.
 reg_namespace = eldr
@@ -80,23 +83,30 @@ help:
 
 # Build the container image.
 build:
-	mkdir -p container/install/tmp \
-	&& cp -r python container/install/tmp \
-	&& cp README.md container/install/tmp \
-	&& cd $(docker_dir) \
-	&& docker build \
-		--build-arg APP_NAME=jaraf \
-		--build-arg APP_VERSION=$(version) \
-		--build-arg GIT_REF= \
-		--build-arg GIT_URL=$(repo_url) \
-		-t $(reg_namespace)/$(reg_repo):$(version) .
+	@mkdir -p container/install/tmp \
+		&& cp -r python container/install/tmp \
+		&& cp README.md container/install/tmp \
+		&& cd $(docker_dir) \
+		&& docker build \
+			--build-arg APP_NAME=jaraf \
+			--build-arg APP_VERSION=$(version) \
+			--build-arg GIT_REF= \
+			--build-arg GIT_URL=$(repo_url) \
+			-t $(reg_namespace)/$(reg_repo):$(version) . \
+		&& docker tag $(reg_namespace)/$(reg_repo):$(version) \
+			$(reg_namespace)/$(reg_repo):latest
 
 # Clean up generated files. This includes files we copied into the docker
 # install directory and python bytecode.
 clean:
 	@find python -depth -name "*__pycache__" -exec rm -rf {} \;
 	@find python -name "*.pyc" -exec rm -f {} \;
-	@rm -rf container/install/tmp coverage docs/html
+	@rm -rf container/install/tmp \
+		coverage docs/html \
+		python/LICENSE \
+		python/README.md \
+		python/build \
+		python/dist
 
 # Genereate the sphinx documentation.
 docs:
@@ -113,6 +123,13 @@ exec:
 		-w /opt/develop \
 		$(helper_image) bash
 
+# Create and upload the jaraf package to pypi.
+package:
+	cp LICENSE README.md python
+	cd python \
+		&& python3 setup.py sdist bdist_wheel \
+		&& twine upload dist/*
+
 # Run unittests and generate a coverage report.
 test:
 	@mkdir -p coverage html/coverage
@@ -127,6 +144,5 @@ test:
 			../python/jaraf/mixin/unittest/TestAll.py \
 		&& $(cov_cmd) html -d ../docs/html/coverage \
 		&& $(cov_cmd) report -m
-
 
 .PHONY: docs
