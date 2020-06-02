@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Dockerfile for building a python3 development container.
+# Dockerfile for building a development container.
 #
 #-------------------------------------------------------------------------------
 FROM photon:3.0
@@ -36,7 +36,7 @@ RUN tdnf update -y \
     && rm -rf /var/cache/tdnf/* \
     && ln -s /usr/bin/python3 /usr/bin/python
 
-# Install the framework in a separate later as this is the part most likely to
+# Install the framework in a separate layer as this is the part most likely to
 # change between builds. This allows us to re-use the previous layers when we
 # have to rebuild.
 RUN cd /tmp/python \

@@ -82,10 +82,10 @@ help:
 	@echo ""
 
 # Build the container image.
-build:
+package:
 	@mkdir -p container/install/tmp \
-		&& cp -r python container/install/tmp \
-		&& cp README.md container/install/tmp \
+		&& cp -r README.md python container/install/tmp \
+		&& sed -ie "s/^VERSION =.*/VERSION = \"$(shell cat ./VERSION)\"/g" container/install/tmp/python/jaraf/version.py \
 		&& cd $(docker_dir) \
 		&& docker build \
 			--build-arg APP_NAME=jaraf \
@@ -114,8 +114,6 @@ docs:
 	$(sphinx_cmd) -E -j 4 docs/sphinx docs/html
 
 # Run an interactive docker session for development and testing.
-# For macs, we need to pass in extra dns options to resolve the coda mongodb
-# servers.
 exec:
 	@docker run -it --rm \
 		--name codaml-dev \
@@ -124,7 +122,7 @@ exec:
 		$(helper_image) bash
 
 # Create and upload the jaraf package to pypi.
-package:
+publish:
 	cp LICENSE README.md python
 	cd python \
 		&& python3 setup.py sdist bdist_wheel \

@@ -13,6 +13,7 @@ import traceback
 
 from jaraf.codes import AppStatusOkay, AppStatusError
 from jaraf.errors import AppError
+from jaraf.version import VERSION
 
 
 def getLogger():

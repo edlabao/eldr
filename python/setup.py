@@ -1,11 +1,15 @@
 import setuptools
 
+# Load the version module to get the current version.
+exec(open("jaraf/version.py").read())
+
+# The long description comes from the README.md file.
 with open("../README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="jaraf-app",
-    version="0.0.1",
+    version=VERSION,
     author="Edward Labao",
     author_email="edlabao.dev@gmail.com",
     classifiers=[
