@@ -143,4 +143,13 @@ test:
 		&& $(cov_cmd) html -d ../docs/html/coverage \
 		&& $(cov_cmd) report -m
 
+# Increment the version patch number.
+.bump_version:
+	$(eval major_vers = $(shell cut -d. -f1 VERSION))
+	$(eval minor_vers = $(shell cut -d. -f2 VERSION))
+	$(eval patch_vers = $(shell cut -d. -f3 VERSION))
+	$(eval new_patch_vers = $(shell echo $$(($(patch_vers)+1))))
+	$(eval version = $(major_vers).$(minor_vers).$(new_patch_vers))
+	@echo $(version) > VERSION
+
 .PHONY: docs
