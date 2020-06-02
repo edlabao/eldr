@@ -60,7 +60,7 @@ class App(object):
         self._arg_parser = argparse.ArgumentParser()
 
         # Logging parameters.
-        self.log = logging
+        self.log = getLogger()
         self._log_level = self.name_to_log_level(kwargs.get("log_level", "INFO"))
         self._silent = kwargs.get("silent", False)
 
@@ -133,7 +133,6 @@ class App(object):
         needed.
         """
 
-        self.log = getLogger()
         self.log.setLevel(self._log_level)
 
         formatter = self.get_log_formatter()
