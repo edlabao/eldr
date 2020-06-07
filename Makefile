@@ -20,7 +20,7 @@ docker_dir = container
 
 # Helper image to use for certain targets.
 helper_image = eldr/jaraf:0.1.0-12-gcc3b837
-ifneq (, $(shell docker images eldr/jaraf:latest | grep eldr 2> /dev/null))
+ifneq (, $(shell docker images eldr/jaraf:latest 2> /dev/null | grep eldr 2> /dev/null))
 	helper_image = eldr/jaraf:latest
 endif
 
@@ -81,20 +81,14 @@ help:
 		|| /usr/bin/true
 	@echo ""
 
-# Build the container image.
-package:
-	@mkdir -p container/install/tmp \
-		&& cp -r README.md python container/install/tmp \
-		&& sed -ie "s/^VERSION =.*/VERSION = \"$(shell cat ./VERSION)\"/g" container/install/tmp/python/jaraf/version.py \
-		&& cd $(docker_dir) \
-		&& docker build \
-			--build-arg APP_NAME=jaraf \
-			--build-arg APP_VERSION=$(version) \
-			--build-arg GIT_REF= \
-			--build-arg GIT_URL=$(repo_url) \
-			-t $(reg_namespace)/$(reg_repo):$(version) . \
-		&& docker tag $(reg_namespace)/$(reg_repo):$(version) \
-			$(reg_namespace)/$(reg_repo):latest
+# Increment the version number
+bump-major: .bump-major
+bump-minor: .bump-minor
+bump-patch: .bump-patch
+
+bump-major bump-minor bump-patch:
+	@echo $(version) > VERSION \
+	&& sed -e "s/^VERSION =.*/VERSION = \"$(version)\"/g" -i python/jaraf/version.py
 
 # Clean up generated files. This includes files we copied into the docker
 # install directory and python bytecode.
@@ -106,7 +100,8 @@ clean:
 		python/LICENSE \
 		python/README.md \
 		python/build \
-		python/dist
+		python/dist \
+		python/jaraf_app.egg-info
 
 # Genereate the sphinx documentation.
 docs:
@@ -120,6 +115,20 @@ exec:
 		-v `pwd`:/opt/develop \
 		-w /opt/develop \
 		$(helper_image) bash
+
+# Build the container image.
+package:
+	@mkdir -p container/install/tmp \
+		&& cp -r README.md python container/install/tmp \
+		&& cd $(docker_dir) \
+		&& docker build \
+			--build-arg APP_NAME=jaraf \
+			--build-arg APP_VERSION=$(version) \
+			--build-arg GIT_REF= \
+			--build-arg GIT_URL=$(repo_url) \
+			-t $(reg_namespace)/$(reg_repo):$(version) . \
+		&& docker tag $(reg_namespace)/$(reg_repo):$(version) \
+			$(reg_namespace)/$(reg_repo):latest
 
 # Create and upload the jaraf package to pypi.
 publish:
@@ -143,13 +152,26 @@ test:
 		&& $(cov_cmd) html -d ../docs/html/coverage \
 		&& $(cov_cmd) report -m
 
-# Increment the version patch number.
-.bump_version:
+
+# Increment the major version.
+.bump-major: .version
+	$(eval new_major_vers = $(shell echo $$(($(major_vers)+1))))
+	$(eval version = $(new_major_vers).0.0)
+
+# Increment the minor version.
+.bump-minor: .version
+	$(eval new_minor_vers = $(shell echo $$(($(minor_vers)+1))))
+	$(eval version = $(major_vers).$(new_minor_vers).0)
+
+# Increment the patch version.
+.bump-patch: .version
+	$(eval new_patch_vers = $(shell echo $$(($(patch_vers)+1))))
+	$(eval version = $(major_vers).$(minor_vers).$(new_patch_vers))
+
+# Break the version number into its semantic parts.
+.version:
 	$(eval major_vers = $(shell cut -d. -f1 VERSION))
 	$(eval minor_vers = $(shell cut -d. -f2 VERSION))
 	$(eval patch_vers = $(shell cut -d. -f3 VERSION))
-	$(eval new_patch_vers = $(shell echo $$(($(patch_vers)+1))))
-	$(eval version = $(major_vers).$(minor_vers).$(new_patch_vers))
-	@echo $(version) > VERSION
 
 .PHONY: docs
