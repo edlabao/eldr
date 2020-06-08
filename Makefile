@@ -32,6 +32,9 @@ reg_repo = jaraf
 # build steps to create a label.
 repo_url = https://github.com/edlabao/jaraf
 
+# The branch to release from.
+release_branch = master
+
 # Get the current version tag.
 version = $(shell git describe 2> /dev/null || echo $(default_version))
 
@@ -47,11 +50,24 @@ endif
 # Set the sphinx doc build command to use for testing.
 sphinx_cmd = sphinx-build
 ifeq (, $(shell which sphinx-build 2> /dev/null))
-	sphinx_cmd = docker run --rm \
+	sphinx_cmd = docker run \
+	    --rm \
 		-v `pwd`:/opt/develop \
 		-w /opt/develop \
 		$(helper_image) sphinx-build
 endif
+
+# Set the twine upload command to use for publishing new versions to pypi.
+twine_cmd = twine
+ifeq (, $(shell which twine 2> /dev/null))
+	twine_cmd = docker run \
+	    --rm \
+	    -it \
+		-v `pwd`:/opt/develop \
+		-w /opt/develop \
+		$(helper_image) twine
+endif
+
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
@@ -88,7 +104,7 @@ bump-patch: .bump-patch
 
 bump-major bump-minor bump-patch:
 	@echo $(version) > VERSION \
-	&& sed -e "s/^VERSION =.*/VERSION = \"$(version)\"/g" -i python/jaraf/version.py
+	&& sed -e "s/^VERSION =.*/VERSION = \"$(version)\"/g" -i "" python/jaraf/version.py
 
 # Clean up generated files. This includes files we copied into the docker
 # install directory and python bytecode.
@@ -130,12 +146,20 @@ package:
 		&& docker tag $(reg_namespace)/$(reg_repo):$(version) \
 			$(reg_namespace)/$(reg_repo):latest
 
-# Create and upload the jaraf package to pypi.
-publish:
-	cp LICENSE README.md python
-	cd python \
-		&& python3 setup.py sdist bdist_wheel \
-		&& twine upload dist/*
+# Release a new version.
+release:
+	$(eval branch_name = $(shell git rev-parse --abbrev-ref HEAD))
+	@echo "Current branch is '$(branch_name)'."
+	@cp LICENSE README.md python
+	@if [ $(branch_name) = $(release_branch) ]; \
+		then \
+			cd python \
+				&& python3 setup.py sdist bdist_wheel \
+				&& $(twine_cmd) upload dist/*; \
+		else \
+			echo "You must be on the '$(release_branch)' branch to release a new version."; \
+			/usr/bin/false; \
+		fi
 
 # Run unittests and generate a coverage report.
 test:
