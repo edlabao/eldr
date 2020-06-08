@@ -8,7 +8,7 @@ with open("../README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="jaraf-app",
+    name="jaraf",
     version=VERSION,
     author="Edward Labao",
     author_email="edlabao.dev@gmail.com",
@@ -21,6 +21,6 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    url="https://github.com/edlabao/jaraf-app",
+    url="https://github.com/edlabao/jaraf",
     zip_safe=True
 )

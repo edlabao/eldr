@@ -117,7 +117,7 @@ clean:
 		python/README.md \
 		python/build \
 		python/dist \
-		python/jaraf_app.egg-info
+		python/jaraf.egg-info
 
 # Genereate the sphinx documentation.
 docs:
@@ -155,7 +155,7 @@ release:
 		then \
 			cd python \
 				&& python3 setup.py sdist bdist_wheel \
-				&& $(twine_cmd) upload dist/*; \
+				&& $(twine_cmd) upload dist/* 2> /dev/null; \
 		else \
 			echo "You must be on the '$(release_branch)' branch to release a new version."; \
 			/usr/bin/false; \
