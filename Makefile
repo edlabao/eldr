@@ -104,7 +104,7 @@ bump-patch: .bump-patch
 
 bump-major bump-minor bump-patch:
 	@echo $(version) > VERSION \
-	&& sed -e "s/^VERSION =.*/VERSION = \"$(version)\"/g" -i "" python/jaraf/version.py
+	&& sed -e "s/^VERSION =.*/VERSION = \"$(version)\"/g" -i python/jaraf/version.py
 
 # Clean up generated files. This includes files we copied into the docker
 # install directory and python bytecode.
