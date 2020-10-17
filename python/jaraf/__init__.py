@@ -15,9 +15,8 @@ from jaraf.codes import AppStatusOkay, AppStatusError
 from jaraf.errors import AppError
 from jaraf.version import VERSION
 
-
-def getLogger():
-    return logging.getLogger("jaraf")
+# Default logger name.
+JARAF_LOGGER_NAME = "jaraf:app"
 
 
 class App(object):
@@ -35,8 +34,8 @@ class App(object):
             app = App()
             app.run()
 
-    Certain :class:`App` parameters can be overridden at object instantiation time
-    by passing keyword arguments to the constructor.::
+    Certain :class:`App` parameters can be overridden at object instantiation
+    time by passing keyword arguments to the constructor.::
 
         app = MyApp(log_level="DEBUG", silent=True, log_level="DEBUG")
 
@@ -61,7 +60,7 @@ class App(object):
         self._arg_parser = argparse.ArgumentParser()
 
         # Logging parameters.
-        self.log = getLogger()
+        self.log = App.get_logger()
         self._log_level = self.name_to_log_level(kwargs.get("log_level", "INFO"))
         self._silent = kwargs.get("silent", False)
 
@@ -216,6 +215,8 @@ class App(object):
             self.add_arguments(self._arg_parser)
 
             # Process application options, first calling the base
+            # _process_arguments() method then the optional process_arguments()
+            # method.
             self._process_arguments(args)
             self.process_arguments(self._args, self._arg_extras)
 
@@ -255,12 +256,12 @@ class App(object):
 
         # Calculate cpu time as combined user and system times.
         cpu_time = rusage_self.ru_utime + rusage_self.ru_stime \
-            + rusage_child.ru_utime + rusage_self.ru_stime
+                   + rusage_child.ru_utime + rusage_self.ru_stime
 
         # RSS units are in kb on Linux but bytes on OSX.
-        units = float(2**10)
+        units = float(2 ** 10)
         if sys.platform == "darwin":
-            units = float(2**20)
+            units = float(2 ** 20)
         max_rss = float(rusage_self.ru_maxrss + rusage_child.ru_maxrss) / units
 
         # Output a footer and return the application status code.
@@ -295,7 +296,6 @@ class App(object):
         """
         Process base App command-line arguments.
         """
-
         (self._args, self._arg_extras) = self._arg_parser.parse_known_args(args)
 
         # Logging level.
@@ -307,6 +307,11 @@ class App(object):
         # Silent flag.
         if self._args.silent:
             self._silent = True
+
+    @staticmethod
+    def get_logger(logger_name=JARAF_LOGGER_NAME):
+        """Return the default jaraf logger."""
+        return logging.getLogger(logger_name)
 
     @staticmethod
     def name_to_log_level(level_name, default=None):

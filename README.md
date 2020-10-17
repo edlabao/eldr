@@ -109,9 +109,8 @@ be defined like so:
 
 ```python
 from jaraf import App
-from jaraf.mixin.cron import CronMixin
-from jaraf.mixin.logfile import LogfileMixin
+from jaraf.mixin.logfile import LogFileMixin
 
-class HelloWorldApp(LogfileMixin, App):
+class HelloWorldApp(LogFileMixin, App):
     # Class definition follows...
 ```

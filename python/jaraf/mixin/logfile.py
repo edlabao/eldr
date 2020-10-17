@@ -43,7 +43,7 @@ import os
 import socket
 import sys
 
-from jaraf import getLogger
+from jaraf import App
 from jaraf.errors import AppInitializationError
 
 
@@ -53,7 +53,6 @@ class LogFileMixin(object):
     """
 
     def __init__(self, *args, **kwargs):
-
         super(LogFileMixin, self).__init__(*args, **kwargs)
 
         # Process information used for the logging format.
@@ -62,7 +61,6 @@ class LogFileMixin(object):
 
         # Logging parameters.
         self._log_backup_count = kwargs.get("log_backup_count", 7)
-        self._log_base_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
         self._log_rotate_when = kwargs.get("log_rotate_when", "MIDNIGHT")
 
         self._log_dir = None
@@ -108,7 +106,7 @@ class LogFileMixin(object):
             raise AppInitializationError
 
         # Initialize the logger.
-        self.log = getLogger()
+        self.log = App.get_logger()
         self.log.setLevel(self._log_level)
 
         formatter = self.get_log_formatter()
@@ -137,7 +135,6 @@ class LogFileMixin(object):
         """
         Add AppLogFileMixin command-line arguments.
         """
-
         super(LogFileMixin, self)._add_arguments()
 
         self._arg_parser.add_argument("--log-file",
@@ -148,7 +145,6 @@ class LogFileMixin(object):
         """
         Process AppLogFileMixin command-line arguments.
         """
-
         super(LogFileMixin, self)._process_arguments(args)
 
         # Log file.
@@ -176,27 +172,21 @@ class LogFileMixin(object):
         """
         self._log_dir = log_dir
         if self._log_dir is None:
-            self._log_dir = "{}/{}".format("/var/log", self._log_base_name)
+            self._log_dir = "."
 
     def _set_log_file(self, log_file):
         """
         Set the log file.
 
-        In addition to setting the _log_file member, this will also set _log_dir
-        if the specified log_file looks like an absolute path.
+        In addition to setting the _log_file member as an absolute filepath,
+        this will also update the _log_dir accordingly.
         """
 
-        self._log_file = log_file
-
-        # If the log file looks like an absolute path, also set the log
-        # directory to the directory component of the log file path. If the log
-        # file is not an absolute path, make it one by prefixing the log
-        # directory to it if the directory is set.
-        if self._log_file is not None:
-            if self._log_file.startswith("/"):
-                self._log_dir = os.path.dirname(self._log_file)
-            elif self._log_dir is not None:
-                self._log_file = "{}/{}".format(self._log_dir, self._log_file)
+        # If the log file is specified, convert it to an absolute path and set
+        # the log directory.
+        if log_file is not None:
+            self._log_file = os.path.abspath(log_file)
+            self._log_dir = os.path.dirname(self._log_file)
 
         # If the log file is not set, but the log directory is, set a default
         # log file path.

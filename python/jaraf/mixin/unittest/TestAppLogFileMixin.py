@@ -75,36 +75,8 @@ class Test(unittest.TestCase):
 
     def test_arguments2(self):
         """
-        Verify that setting the log directory via a constructor parameter and a
-        log file that is not a path via command line arguments results in a log
-        file with the correct absolute path.
-        """
-        # Initialize a temporary directory.
-        test_dir = tempfile.mkdtemp()
-        test_file = "testapp.log"
-
-        try:
-            # Initialize the app, passing in the test directory for the log_dir
-            # as-is. The test directory will have been created by the tempfile
-            # module for us.
-            app = TestApp(log_dir=test_dir)
-            app.run(args=["--log-file", test_file])
-
-            self.assertEqual(app.log_dir, test_dir)
-            self.assertEqual(app.log_file, "{}/{}".format(test_dir, test_file))
-
-        finally:
-            # Remove the log handler we generated (log handlers are singletons
-            # so subsequent tests may have unexpected results if we don't remove
-            # them after each test) and remove the temp directory we created.
-            app.log.handlers[0].close()
-            app.log.removeHandler(app.log.handlers[0])
-            shutil.rmtree(test_dir)
-
-    def test_arguments3(self):
-        """
-        Verify that specifying a log file with an absolute path via command-line
-        arguments will override a directory set via constructor parameter.
+        Verify that specifying a log file via the command-line argument will
+        override a directory set via constructor parameter.
         """
         # Initialize a temporary directory.
         test_dir = tempfile.mkdtemp()
@@ -128,6 +100,32 @@ class Test(unittest.TestCase):
             app.log.removeHandler(app.log.handlers[0])
             shutil.rmtree(test_dir)
 
+    def test_arguments3(self):
+        """
+        Verify that the expected default log file path is generated when no log
+        file is specified but a log directory is specified via the constructor.
+        """
+        # Initialize a temporary directory.
+        test_dir = "/foo/bar"
+
+        try:
+            # Initialize the app, passing in the test directory for the log_dir
+            # as-is. The test directory will have been created by the tempfile
+            # module for us.
+            app = TestApp(log_dir=test_dir)
+            app.run()
+
+            self.assertEqual(app.log_dir, test_dir)
+            self.assertEqual(app.log_file, "{}/testapp.log".format(test_dir))
+
+        finally:
+            # Remove the log handler we generated (log handlers are singletons
+            # so subsequent tests may have unexpected results if we don't remove
+            # them after each test) and remove the temp directory we created.
+            app.log.handlers[0].close()
+            app.log.removeHandler(app.log.handlers[0])
+            shutil.rmtree(test_dir)
+
     def test_init1(self):
         """
         Verify default logging parameters.
@@ -136,8 +134,8 @@ class Test(unittest.TestCase):
         # Because the specific default log directory and file path will depend
         # on how this test is run (e.g. directly or via a suite like TestAll.py)
         # we validate their values by matching them against a regex.
-        re_dir = re.compile("^\/var\/log\/[^\/]+$")
-        re_file = re.compile("^\/var\/log\/[^\/]+\/[^\/+]+.log$")
+        re_dir = re.compile("^\.$")
+        re_file = re.compile("^\./[^/+]+.log$")
 
         app = TestApp()
         self.assertEqual(app._log_backup_count, 7)
@@ -152,12 +150,10 @@ class Test(unittest.TestCase):
 
         app = TestApp(log_backup_count=30,
                       log_dir="/foo",
-                      log_file="bar.log",
                       log_rotate_when="W6")
 
         self.assertEqual(app._log_backup_count, 30)
         self.assertEqual(app._log_dir, "/foo")
-        self.assertEqual(app._log_file, "/foo/bar.log")
         self.assertEqual(app._log_rotate_when, "W6")
 
     def test_init3(self):
@@ -284,7 +280,7 @@ class Test(unittest.TestCase):
         # Because the specific default log directory will depend on how this
         # test is run (e.g. directly or via a suite like TestAll.py) we validate
         # its value by matching it against a regex.
-        re_dir = re.compile("^\/var\/log\/[^\/]+$")
+        re_dir = re.compile("^\.$")
 
         app = TestApp()
         self.assertTrue(re_dir.match(app._log_dir))
@@ -306,7 +302,7 @@ class Test(unittest.TestCase):
         # Because the specific default log file path will depend on how this
         # test is run (e.g. directly or via a suite like TestAll.py) we validate
         # its value by matching it against a regex.
-        re_file = re.compile("^\/var\/log\/[^\/]+\/[^\/+]+.log$")
+        re_file = re.compile("^\./[^\/+]+.log$")
 
         app = TestApp()
         self.assertTrue(re_file.match(app._log_file))
