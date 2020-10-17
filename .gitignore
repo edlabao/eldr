@@ -17,6 +17,9 @@
 # Maven:
 *target/
 
+# Pycharm:
+.idea
+
 # Python:
 *.pyc
 *.coverage
