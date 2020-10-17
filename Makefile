@@ -19,7 +19,7 @@ default_version = 0.1.0
 docker_dir = container
 
 # Helper image to use for certain targets.
-helper_image = eldr/jaraf:0.1.0-12-gcc3b837
+helper_image = eldr/jaraf:0.2
 ifneq (, $(shell docker images eldr/jaraf:latest 2> /dev/null | grep eldr 2> /dev/null))
 	helper_image = eldr/jaraf:latest
 endif
@@ -33,7 +33,7 @@ reg_repo = jaraf
 repo_url = https://github.com/edlabao/jaraf
 
 # The branch to release from.
-release_branch = master
+release_branch = release
 
 # Get the current version tag.
 version = $(shell git describe 2> /dev/null || echo $(default_version))
@@ -119,7 +119,7 @@ clean:
 		python/dist \
 		python/jaraf.egg-info
 
-# Genereate the sphinx documentation.
+# Generate the sphinx documentation.
 docs:
 	@mkdir -p docs/html
 	$(sphinx_cmd) -E -j 4 docs/sphinx docs/html
@@ -133,7 +133,7 @@ exec:
 		$(helper_image) bash
 
 # Build the container image.
-package:
+package: .version
 	@mkdir -p container/install/tmp \
 		&& cp -r README.md python container/install/tmp \
 		&& cd $(docker_dir) \
@@ -143,6 +143,8 @@ package:
 			--build-arg GIT_REF= \
 			--build-arg GIT_URL=$(repo_url) \
 			-t $(reg_namespace)/$(reg_repo):$(version) . \
+		&& docker tag $(reg_namespace)/$(reg_repo):$(version) \
+			$(reg_namespace)/$(reg_repo):$(major_vers).$(minor_vers) \
 		&& docker tag $(reg_namespace)/$(reg_repo):$(version) \
 			$(reg_namespace)/$(reg_repo):latest
 
