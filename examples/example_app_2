@@ -1,0 +1,53 @@
+#!/usr/bin/python3
+"""
+example_app_2
+
+This example makes use of the LogFileMixin to output to a log file rather than
+stdout.
+"""
+
+import os
+import sys
+
+##
+# BOOTSTRAP: BEGIN
+#
+# Bootstrapping code to ensure we can find all the right modules. All other
+# local imports should be done after this block.
+##
+__path = os.path.dirname(os.path.realpath(__file__)) + "/../python"
+sys.path.insert(0, __path)
+##
+# BOOTSTRAP: END
+##
+
+from jaraf import App, get_logger
+from jaraf.mixin.logfile import LogFileMixin
+
+# Get a reference to the application logger.
+LOG = get_logger()
+
+
+class ExampleApp2(LogFileMixin, App):
+
+    def main(self):
+        self.log.info("Entered main()")
+        self.do_stuff()
+        self.log.info("Leaving main()")
+
+    def do_stuff(self):
+        """
+        Do important stuff.
+        """
+        self.log.info("log_file: %s", self._log_file)
+        self.log.info("log_dir: %s", self._log_dir)
+
+
+
+if __name__ == "__main__":
+    # Instantiate and run a test app.
+    app = ExampleApp2()
+    app.run()
+
+    # Log one last message.
+    LOG.info("That's all, folks!")
