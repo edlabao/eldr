@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+
+"""
+example_app_1
+
+This example shows basic usage of the jaraf framework.
+"""
+
+import os
+import sys
+
+##
+# BOOTSTRAP: BEGIN
+#
+# Bootstrapping code to ensure we can find all the right modules. All other
+# local imports should be done after this block.
+##
+__path = os.path.dirname(os.path.realpath(__file__)) + "/../python"
+sys.path.insert(0, __path)
+##
+# BOOTSTRAP: END
+##
+
+from jaraf import App
+
+# We can get a reference to the application logger and use that for output
+# logging if we don't have access to self.log.
+LOG = App.get_logger()
+
+class ExampleApp1(App):
+
+    def main(self):
+        self.log.info("Entered main()")
+        self.do_stuff()
+        self.log.info("Leaving main()")
+
+    def do_stuff(self):
+        """
+        Do important stuff.
+        """
+        self.log.info("Doing stuff...")
+
+
+if __name__ == "__main__":
+
+    # Instantiate and run a test app.
+    app = ExampleApp1()
+    app.run()
+
+    # Log one last message with the application logger we grabbed earlier.
+    LOG.info("That's all, folks!")
