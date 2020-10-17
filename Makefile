@@ -127,7 +127,7 @@ docs:
 # Run an interactive docker session for development and testing.
 exec:
 	@docker run -it --rm \
-		--name codaml-dev \
+		--name jaraf-dev \
 		-v `pwd`:/opt/develop \
 		-w /opt/develop \
 		$(helper_image) bash
